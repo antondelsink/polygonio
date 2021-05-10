@@ -23,7 +23,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Examples", "Examples", "{0E
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PolygonIo.Utils.StreamReplay", "PolygonIo.Utils.StreamReplay\PolygonIo.Utils.StreamReplay.csproj", "{A1A4DBF6-F69A-4E17-A0F4-75BE990EFF10}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PolygonIo.Parser.Tests", "PolygonIo.Parser.Tests\PolygonIo.Parser.Tests.csproj", "{4CCE7E59-7A01-46C9-AD17-A0D03B762F25}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PolygonIo.Parser.Tests", "PolygonIo.Parser.Tests\PolygonIo.Parser.Tests.csproj", "{4CCE7E59-7A01-46C9-AD17-A0D03B762F25}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PolygonIo.Demos", "PolygonIo.Demos\PolygonIo.Demos.csproj", "{9F9269F5-FE0A-4B3C-83BF-D2DA4D7D5A55}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -63,6 +65,10 @@ Global
 		{4CCE7E59-7A01-46C9-AD17-A0D03B762F25}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4CCE7E59-7A01-46C9-AD17-A0D03B762F25}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4CCE7E59-7A01-46C9-AD17-A0D03B762F25}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9F9269F5-FE0A-4B3C-83BF-D2DA4D7D5A55}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9F9269F5-FE0A-4B3C-83BF-D2DA4D7D5A55}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9F9269F5-FE0A-4B3C-83BF-D2DA4D7D5A55}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9F9269F5-FE0A-4B3C-83BF-D2DA4D7D5A55}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
