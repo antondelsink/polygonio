@@ -1,5 +1,4 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -7,7 +6,6 @@ using System.IO;
 using System.Linq;
 using System.Net.WebSockets;
 using System.Text;
-using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -23,37 +21,6 @@ namespace PolygonIo.Demos
         private int countQuoteMessages = 0;
         private int countTradeMessages = 0;
         private int countAggregateMessages = 0;
-
-        [TestMethod]
-        public void Test_101_JsonConvertDeserializeObject()
-        {
-            var filename = @"C:\PolygonData\2021-05-06-06-12--websocket.log";
-            Assert.IsTrue(File.Exists(filename));
-
-            int lineCount = 0;
-            int objectCount = 0;
-            foreach (var line in File.ReadLines(filename))
-            {
-                lineCount++;
-
-                IEnumerable<string> jsonObjects;
-                jsonObjects = GetEnumerableOfJsonStrings(line);
-
-                foreach (var sJsonObject in jsonObjects)
-                {
-                    objectCount++;
-
-                    _ = Encoding.UTF8.GetBytes(sJsonObject).AsSpan(); // for equivalency of tests
-
-                    ProcessJsonObjectString(sJsonObject);
-                }
-            }
-            Assert.AreEqual(23518188, countQuoteMessages);
-            Assert.AreEqual(6036154, countTradeMessages);
-            Assert.AreEqual(537411, countAggregateMessages);
-            Assert.AreEqual(1520, countStatusMessages);
-            Assert.AreEqual(10951522, lineCount); // compared to command-line "find /C 'ev' ..."
-        }
 
         [TestMethod]
         public void Test_100_Utf8Reader()
@@ -80,12 +47,10 @@ namespace PolygonIo.Demos
                     {
                         case (byte)'Q':
                             Assert.IsTrue(Quote.TryParse(json, out Quote q));
-                            Assert.IsTrue(!string.IsNullOrWhiteSpace(q.Symbol));
                             countQuoteMessages++;
                             break;
                         case (byte)'T':
                             Assert.IsTrue(Trade.TryParse(json, out Trade t));
-                            Assert.IsTrue(!string.IsNullOrWhiteSpace(t.Symbol));
                             countTradeMessages++;
                             break;
                         case (byte)'A':
@@ -120,29 +85,6 @@ namespace PolygonIo.Demos
             }
 
             return jsonObjects;
-        }
-
-        private void ProcessJsonObjectString(string sJsonObject)
-        {
-            switch (sJsonObject[7])
-            {
-                case 'T':
-                    Trade_JsonDeserializeObject t = JsonConvert.DeserializeObject<Trade_JsonDeserializeObject>(sJsonObject);
-                    Assert.IsTrue(!string.IsNullOrWhiteSpace(t.Symbol));
-                    countTradeMessages++;
-                    break;
-                case 'Q':
-                    Quote_JsonDeserializeObject q = JsonConvert.DeserializeObject<Quote_JsonDeserializeObject>(sJsonObject);
-                    Assert.IsTrue(!string.IsNullOrWhiteSpace(q.Symbol));
-                    countQuoteMessages++;
-                    break;
-                case 'A':
-                    countAggregateMessages++;
-                    break;
-                case 's':
-                    countStatusMessages++;
-                    break;
-            }
         }
 
         [TestMethod]
@@ -379,16 +321,16 @@ namespace PolygonIo.Demos
             var uri = new Uri(wssUriPolygonIO);
             var cts = new CancellationTokenSource();
 
-            using (var wsPolygon = new PolygonWebSocket(uri, cts.Token))
+            using (var wsPolygon = new PolygonWebSocketV2(uri, cts.Token))
             {
                 wsPolygon.OnStatus += (s) => Debug.WriteLine(s);
 
-                using (var svcPolygon = new PolygonService(wsPolygon, apiKeyPolygonIO))
+                using (var svcPolygon = new PolygonServiceV2(wsPolygon, apiKeyPolygonIO))
                 {
-                    svcPolygon.OnStatus += (s) => Debug.WriteLine(s);
+                    svcPolygon.OnStatusString += (s) => Debug.WriteLine(s);
 
                     int count = 0;
-                    svcPolygon.OnData += (msg) => { count++; Debug.WriteLineIf(count % 100 == 0, $"Count: {count}"); };
+                    //svcPolygon.OnData += (msg) => { count++; Debug.WriteLineIf(count % 1000 == 0, $"Count: {count}"); };
 
                     svcPolygon.OnData += LogToDisk;
 
@@ -409,12 +351,13 @@ namespace PolygonIo.Demos
                         {
                             Thread.Yield();
                         }
-                        while (!svcPolygon.TrySubscribe("A." + symbol))
-                        {
-                            Thread.Yield();
-                        }
                     }
-                    Task.WaitAll(Task.Delay(TimeSpan.FromMinutes(60)));
+                    while (!svcPolygon.TrySubscribe("A.*"))// + symbol))
+                    {
+                        Thread.Yield();
+                    }
+
+                    Task.WaitAll(Task.Delay(TimeSpan.FromMinutes(180)));
                     cts.Cancel();
                 }
             }
