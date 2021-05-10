@@ -16,27 +16,27 @@ namespace PolygonIo.WebSocket
         const int SubsciptionChunkSize = 1000;
         const int SendChunkSize = 2048;
 
-        static public async Task SendAuthentication(this ClientWebSocket websocket, string apiKey, CancellationToken cancellationToken)
+        public static async Task SendAuthentication(this ClientWebSocket websocket, string apiKey, CancellationToken cancellationToken)
         {
             await websocket.SendAsChunksAsync("{\"action\":\"auth\",\"params\":\"" + apiKey + "\"}", SendChunkSize, cancellationToken);
         }
 
-        static public async Task SubscribeToAggregatePerSecond(this ClientWebSocket websocket, IEnumerable<string> symbols, CancellationToken cancellationToken)
+        public static async Task SubscribeToAggregatePerSecond(this ClientWebSocket websocket, IEnumerable<string> symbols, CancellationToken cancellationToken)
         {
             await Subscribe(websocket, symbols, SubscriptionType.AggregatePerSecond, cancellationToken);
         }
 
-        static public async Task SubscribeToAggregatePerMinute(this ClientWebSocket websocket, IEnumerable<string> symbols, CancellationToken cancellationToken)
+        public static async Task SubscribeToAggregatePerMinute(this ClientWebSocket websocket, IEnumerable<string> symbols, CancellationToken cancellationToken)
         {
             await Subscribe(websocket, symbols, SubscriptionType.AggregatePerMinute, cancellationToken);
         }
 
-        static public async Task SubscribeToTrades(this ClientWebSocket websocket, IEnumerable<string> symbols,  CancellationToken cancellationToken)
+        public static async Task SubscribeToTrades(this ClientWebSocket websocket, IEnumerable<string> symbols,  CancellationToken cancellationToken)
         {
             await Subscribe(websocket, symbols, SubscriptionType.Trade, cancellationToken);
         }
 
-        static public async Task SubscribeToQuotes(this ClientWebSocket websocket, IEnumerable<string> symbols, CancellationToken cancellationToken)
+        public static async Task SubscribeToQuotes(this ClientWebSocket websocket, IEnumerable<string> symbols, CancellationToken cancellationToken)
         {
             await Subscribe(websocket, symbols, SubscriptionType.Quote, cancellationToken);
         }
@@ -86,12 +86,12 @@ namespace PolygonIo.WebSocket
                 _ => throw new ArgumentException(nameof(subscriptionType)),
             };
         }
-        static public async Task SendAsChunksAsync(this ClientWebSocket webSocket, string message, int sendChunkSize, CancellationToken cancellationToken)
+        public static async Task SendAsChunksAsync(this ClientWebSocket webSocket, string message, int sendChunkSize, CancellationToken cancellationToken)
         {
             await webSocket.SendAsChunksAsync(Encoding.UTF8.GetBytes(message), WebSocketMessageType.Text, sendChunkSize, cancellationToken);
         }
 
-        static public async Task SendAsChunksAsync(this ClientWebSocket webSocket, byte[] data, WebSocketMessageType type, int sendChunkSize, CancellationToken cancellationToken)
+        public static async Task SendAsChunksAsync(this ClientWebSocket webSocket, byte[] data, WebSocketMessageType type, int sendChunkSize, CancellationToken cancellationToken)
         {
             var messagesCount = (int)Math.Ceiling((double)data.Length / sendChunkSize);
 
