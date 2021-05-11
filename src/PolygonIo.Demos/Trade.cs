@@ -34,7 +34,11 @@ namespace PolygonIo.Demos
                 return false;
             }
         }
-
+        public static Trade Parse(ReadOnlySpan<byte> json)
+        {
+            var reader = new Utf8JsonReader(json);
+            return JsonSerializer.Deserialize<Trade>(ref reader);
+        }
         public override string ToString()
         {
             return $"Trade {Symbol} for {Price:C2}";

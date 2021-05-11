@@ -37,5 +37,10 @@ namespace PolygonIo.Demos
                 return false;
             }
         }
+        public static Quote Parse(ReadOnlySpan<byte> json)
+        {
+            var reader = new Utf8JsonReader(json);
+            return JsonSerializer.Deserialize<Quote>(ref reader);
+        }
     }
 }
