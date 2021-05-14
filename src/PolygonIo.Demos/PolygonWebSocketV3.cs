@@ -19,12 +19,12 @@ namespace PolygonIo.Demos
 
         private const int ReceiveBufferSize = 8192 * 4;
 
-        private const int SendRetryDelayOnDisconnect = 250;
+        private const int SendRetryDelayOnDisconnect = 1000;
         private const int SendDelayBetweenCommandBatches = 500;
         private const int OuterLoop_OnException_ThreadSleepDuration = 10_000;
 
-        private TimeSpan TryConnectTimeout = TimeSpan.FromSeconds(7);
-        private TimeSpan TryConnectRetryInterval = TimeSpan.FromMilliseconds(250);
+        private TimeSpan TryConnectTimeout = TimeSpan.FromSeconds(17);
+        private TimeSpan TryConnectRetryInterval = TimeSpan.FromSeconds(2);
         private const int TryConnectMaxRetryCount = 5;
 
         private Uri URI { get; init; }

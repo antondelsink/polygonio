@@ -11,7 +11,7 @@ namespace PolygonIo.Demos
 
         private bool ConnectionMessageReceived = false;
         public bool IsConnected => wsPolygon.IsConnected && ConnectionMessageReceived;
-        public bool IsAuthenticated { get; private set; }
+        public bool IsAuthenticated { get; private set; } = false;
 
         IPolygonWebSocket wsPolygon;
 
